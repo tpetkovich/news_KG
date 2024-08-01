@@ -1,0 +1,32 @@
+services:
+  neo4j:
+    image: neo4j:5.21.2-community
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=none
+    volumes:
+      - ./neo4j_data:/data
+  fuseki:
+    container_name: news_kg_fuseki_container
+    image: news_kg_fuseki
+    build: /fuseki/
+    ports:
+      - "3030:3030"
+    environment:
+      - ADMIN_PASSWORD="password"
+  jupyter:
+    container_name: news_kg_jupyter_container
+    image: news_kg_jupyter
+    build: /jupyter/
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebook:/home/jovyan/work
+    env_file: ".env"
+    environment:
+      - DOCKER_STACKS_JUPYTER_CMD=notebook
+    depends_on:
+      - neo4j
+      - fuseki

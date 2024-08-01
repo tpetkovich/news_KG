@@ -1,0 +1,325 @@
+@prefix : <http://www.example.org/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://www.example.org/> .
+
+<http://example.com/msci_demo> rdf:type owl:Ontology ;
+                                owl:versionIRI <http://example.com/msci_demo/0.3> .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://www.example.org//companyEvent
+:companyEvent rdf:type owl:ObjectProperty ;
+              rdfs:domain :Company ;
+              rdfs:range :Event .
+
+
+###  http://www.example.org//exemptedIndustry
+:exemptedIndustry rdf:type owl:ObjectProperty ;
+                  rdfs:subPropertyOf owl:topObjectProperty ;
+                  owl:inverseOf :industryExempted ;
+                  rdfs:domain :Regulation ;
+                  rdfs:range :Industry .
+
+
+###  http://www.example.org//industryExempted
+:industryExempted rdf:type owl:ObjectProperty ;
+                  rdfs:subPropertyOf owl:topObjectProperty .
+
+
+###  http://www.example.org//isWithin
+:isWithin rdf:type owl:ObjectProperty ;
+          rdfs:subPropertyOf owl:topObjectProperty ;
+          owl:inverseOf :locationContains ;
+          rdfs:domain :Location .
+
+
+###  http://www.example.org//locationContains
+:locationContains rdf:type owl:ObjectProperty ;
+                  rdfs:subPropertyOf owl:topObjectProperty ;
+                  rdfs:domain :Location ;
+                  rdfs:range :Location .
+
+
+###  http://www.example.org//regionRegulated
+:regionRegulated rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf owl:topObjectProperty ;
+                 owl:inverseOf :regulatedRegion ;
+                 owl:propertyChainAxiom ( :isWithin
+                                          :regionRegulated
+                                        ) .
+
+
+###  http://www.example.org//regulatedRegion
+:regulatedRegion rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf owl:topObjectProperty ;
+                 rdfs:domain :Regulation ;
+                 rdfs:range :Location .
+
+
+###  http://www.example.org//relatedEvent
+:relatedEvent rdf:type owl:ObjectProperty ;
+              rdfs:range :Event .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://www.example.org//EBITDA_YoY_change
+:EBITDA_YoY_change rdf:type owl:DatatypeProperty .
+
+
+###  http://www.example.org//constructionActivity
+:constructionActivity rdf:type owl:DatatypeProperty .
+
+
+###  http://www.example.org//customerChurnRate
+:customerChurnRate rdf:type owl:DatatypeProperty .
+
+
+###  http://www.example.org//debtToEquityRatio
+:debtToEquityRatio rdf:type owl:DatatypeProperty .
+
+
+###  http://www.example.org//ecommerceMarketShare
+:ecommerceMarketShare rdf:type owl:DatatypeProperty .
+
+
+###  http://www.example.org//growthRate
+:growthRate rdf:type owl:DatatypeProperty .
+
+
+###  http://www.example.org//industrialLandValue
+:industrialLandValue rdf:type owl:DatatypeProperty .
+
+
+###  http://www.example.org//marketCapitalization
+:marketCapitalization rdf:type owl:DatatypeProperty .
+
+
+###  http://www.example.org//newConstructionPermits
+:newConstructionPermits rdf:type owl:DatatypeProperty .
+
+
+###  http://www.example.org//previousForecastAccuracy
+:previousForecastAccuracy rdf:type owl:DatatypeProperty .
+
+
+###  http://www.example.org//recentAcquisitions
+:recentAcquisitions rdf:type owl:DatatypeProperty .
+
+
+###  http://www.example.org//recentLayoffs
+:recentLayoffs rdf:type owl:DatatypeProperty .
+
+
+###  http://www.example.org//reputationScore
+:reputationScore rdf:type owl:DatatypeProperty .
+
+
+###  http://www.example.org//vacancyRate
+:vacancyRate rdf:type owl:DatatypeProperty .
+
+
+###  http://www.example.org//warehouseOccupancy
+:warehouseOccupancy rdf:type owl:DatatypeProperty .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://example.com/msci_demo#GrowingIndustry
+:GrowingIndustry rdf:type owl:Class ;
+                 owl:equivalentClass [ owl:intersectionOf ( :Industry
+                                                            [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :industryExempted ;
+                                                              owl:someValuesFrom :Regulation
+                                                            ]
+                                                          ) ;
+                                       rdf:type owl:Class
+                                     ] ;
+                 rdfs:comment "Industries, which can grow as they are exempt from zoning regulations" .
+
+
+###  http://www.example.org//Company
+:Company rdf:type owl:Class .
+
+
+###  http://www.example.org//Event
+:Event rdf:type owl:Class .
+
+
+###  http://www.example.org//Industry
+:Industry rdf:type owl:Class .
+
+
+###  http://www.example.org//Location
+:Location rdf:type owl:Class .
+
+
+###  http://www.example.org//Regulation
+:Regulation rdf:type owl:Class .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://www.example.org//E-commerce_Real_Estate_Exemption
+:E-commerce_Real_Estate_Exemption rdf:type owl:NamedIndividual ,
+                                           :Regulation ;
+                                  :exemptedIndustry :ECommerce ;
+                                  :regulatedRegion :Europe ;
+                                  rdfs:comment "Some industries posess exemptions from real estate zoning regulations in the linked regions, meaning they can freely grow even if there are specific limitations on new warehouse constructions." ;
+                                  rdfs:label "Real Estate Exemptions for industries" .
+
+
+###  http://www.example.org//ECommerce
+:ECommerce rdf:type owl:NamedIndividual ,
+                    :Industry ;
+           :relatedEvent :EcommerceGrowth ;
+           :growthRate "-25%" ;
+           rdfs:label "E-commerce Sector" .
+
+
+###  http://www.example.org//EcommerceGrowth
+:EcommerceGrowth rdf:type owl:NamedIndividual ,
+                          :Event ;
+                 rdfs:comment "Major e-commerce players report a 25% year-over-year decrease in sales volume across European markets." ;
+                 rdfs:label "E-commerce Growth" .
+
+
+###  http://www.example.org//EconomicOutlook
+:EconomicOutlook rdf:type owl:NamedIndividual ,
+                          :Event ;
+                 rdfs:comment "IMF revises Eurozone GDP growth forecast for 2024 from 1.8% to 0.5%, citing inflationary pressures and reduced consumer spending." ;
+                 rdfs:label "Economic Outlook" .
+
+
+###  http://www.example.org//EuroPropertyAdvisors
+:EuroPropertyAdvisors rdf:type owl:NamedIndividual ,
+                               :Company ;
+                      :relatedEvent :IndustryTrend ;
+                      :previousForecastAccuracy "35%" ;
+                      :reputationScore "3 out of 10" ;
+                      rdfs:label "EuroProperty Advisors" .
+
+
+###  http://www.example.org//Europe
+:Europe rdf:type owl:NamedIndividual ,
+                 :Location ;
+        :locationContains :Paris ,
+                          :RuhrArea ,
+                          :Warsaw .
+
+
+###  http://www.example.org//GreaterLondon
+:GreaterLondon rdf:type owl:NamedIndividual ,
+                        :Location ;
+               :relatedEvent :RegulatoryChange ;
+               :newConstructionPermits "-50%" ;
+               rdfs:label "Greater London" .
+
+
+###  http://www.example.org//Green_Energy
+:Green_Energy rdf:type owl:NamedIndividual ,
+                       :Company ;
+              :companyEvent :RegulatoryEvent ;
+              :EBITDA_YoY_change "-40%" ;
+              :customerChurnRate "25%" ;
+              rdfs:label "GreenEnergy Holdings LLC" .
+
+
+###  http://www.example.org//IndustrialRealEstate
+:IndustrialRealEstate rdf:type owl:NamedIndividual ,
+                               :Industry ;
+                      :relatedEvent :WarehouseUtilization ;
+                      :vacancyRate "30%" ;
+                      rdfs:label "Industrial Real Estate" .
+
+
+###  http://www.example.org//IndustryTrend
+:IndustryTrend rdf:type owl:NamedIndividual ,
+                        :Event ;
+               rdfs:comment "Recent satellite data shows a 40% decrease in construction activity for new warehouses across Europe in Q3 2023." ;
+               rdfs:label "Industry Trend" .
+
+
+###  http://www.example.org//Paris
+:Paris rdf:type owl:NamedIndividual ,
+                :Location ;
+       :relatedEvent :EcommerceGrowth ;
+       :ecommerceMarketShare "-15%" ;
+       rdfs:label "Paris" .
+
+
+###  http://www.example.org//RegulatoryChange
+:RegulatoryChange rdf:type owl:NamedIndividual ,
+                           :Event ;
+                  rdfs:comment "The European Commission has announced strict zoning regulations limiting warehouse construction in urban areas, effective January 2024." ;
+                  rdfs:label "Regulatory Change" .
+
+
+###  http://www.example.org//RegulatoryEvent
+:RegulatoryEvent rdf:type owl:NamedIndividual ,
+                          :Event ;
+                 rdfs:comment "GreenEnergy Holdings is facing potential license revocation in two major markets due to alleged fraudulent practices." ;
+                 rdfs:label "GreenEnergy regulatory event" .
+
+
+###  http://www.example.org//RuhrArea
+:RuhrArea rdf:type owl:NamedIndividual ,
+                   :Location ;
+          :relatedEvent :WarehouseUtilization ;
+          :warehouseOccupancy "45%" ;
+          rdfs:label "Ruhr Area" .
+
+
+###  http://www.example.org//SolarSpark
+:SolarSpark rdf:type owl:NamedIndividual ,
+                     :Company ;
+            :EBITDA_YoY_change "-15%" ;
+            :debtToEquityRatio "2.8" ;
+            :marketCapitalization "$300 million" ;
+            :recentAcquisitions "3.5" ;
+            :recentLayoffs "20% of workforce" ;
+            rdfs:label "SolarSpark Inc." .
+
+
+###  http://www.example.org//Warehouse
+:Warehouse rdf:type owl:NamedIndividual ,
+                    :Industry ;
+           :relatedEvent :IndustryTrend ;
+           :constructionActivity "-40%" ;
+           rdfs:label "Warehouse Sector" .
+
+
+###  http://www.example.org//WarehouseUtilization
+:WarehouseUtilization rdf:type owl:NamedIndividual ,
+                               :Event ;
+                      rdfs:comment "Recent industry survey reveals 30% of existing e-commerce warehouses in Europe are operating at less than 50% capacity." ;
+                      rdfs:label "Warehouse Utilization" .
+
+
+###  http://www.example.org//Warsaw
+:Warsaw rdf:type owl:NamedIndividual ,
+                 :Location ;
+        :relatedEvent :EconomicOutlook ;
+        :industrialLandValue "-10%" ;
+        rdfs:label "Warsaw" .
+
+
+###  http://www.example.org//industryTrend
+:industryTrend rdf:type owl:NamedIndividual ,
+                        :Event ;
+               rdfs:comment "The retail energy sector is experiencing a severe downturn, with average company valuations down 30% year-over-year due to regulatory pressures and a shift towards renewable energy sources." .
+
+
+###  Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi

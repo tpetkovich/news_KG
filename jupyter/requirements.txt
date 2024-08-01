@@ -1,0 +1,4 @@
+anthropic==0.28.1
+py2neo==2021.2.4
+rdflib==7.0.0
+tenacity==8.4.2
