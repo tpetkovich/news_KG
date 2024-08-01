@@ -39,8 +39,8 @@ The project uses three Docker images:
 
 1. Clone this repository:
    ```
-   git clone https://github.com/yourusername/financial-news-analytics-kg.git
-   cd financial-news-analytics-kg
+   git clone https://github.com/tpetkovich/news_KG.git
+   cd news_KG
    ```
 
 2. Add your Anthropic API key to the `.env` file:
